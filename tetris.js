@@ -15,8 +15,6 @@ const ctx = canvas.getContext("2d");
 ctx.fillStyle = "limegreen";
 ctx.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);
 
-
-/* View in fullscreen */
 function enterFullscreen() {
   const elem = document.body;
   if (elem.requestFullscreen) {
@@ -30,7 +28,6 @@ function enterFullscreen() {
   }
 }
 
-/* Exit fullscreen */
 function exitFullscreen() {
   const elem = document.getElementById("container");
   if (document.exitFullscreen) {
@@ -51,12 +48,12 @@ function resizeGame() {
   const ratio = 4 / 3;
   const newRatio = innerHeight / innerWidth;
   if (newRatio > ratio) {
-    var newHeight = ratio * innerWidth;
-    var newWidth = innerWidth;
+    var newHeight = ratio * (innerWidth - 3);
+    var newWidth = (innerWidth - 3);
   }
   else {
-    var newHeight = innerHeight;
-    var newWidth = innerHeight / ratio;
+    var newHeight = innerHeight - 3;
+    var newWidth = (innerHeight - 3) / ratio;
   }
   const elem = document.getElementById("container");
   elem.style.height = newHeight + 'px';
