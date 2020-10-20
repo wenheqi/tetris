@@ -2,6 +2,12 @@
 
 The classic arcade game is back, on desktop and mobile devices! Try if you can achieve 999,999 points with less than 207 completed lines🤪 (p.s.: that's the world record❗❗❗)
 
+# Lesson Learned
+
+- Strokes are aligned to the center of a path; in other words, half of the stroke is drawn on the inner side, and half on the outer side.
+
+- There is no way to stop a `forEach` loop other than by trowing an exception.
+
 # Issue History
 
 - Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `resize` event every time `innerWidth` or `innerHeight` changes.
