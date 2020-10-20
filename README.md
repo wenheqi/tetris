@@ -4,28 +4,29 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
 
 # Issue History
 
-- Chrome, Firefox and Safari on iPad Pro (13.7) cannot update `innerWidth` & `innerHeight` timely.
+- Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `reszie` event whenever `innerWidth` or `innerHeight` changes.
    + **What's the Impact**
 
       When user switch the orientation of their mobile device, the game will not resize to give the user best play experience, as the canvas size is not as big as it should be.
+
       From the folloing testing results we can see all the Chrome, Firefox and Safari users on iPadOS are impacted.
 
-     | Platform | Version | Browser | Version      | Operation             | Result |
-     |----------|---------|---------|--------------|-----------------------|:------:|
-     | iPad OS  | 13.7    | Chrome  | 86.0.4240.93 | landscape to portrait | ❌     |
-     | iPad OS  | 13.7    | Chrome  | 86.0.4240.93 | portrait to landscape | ❌     |
-     | iPad OS  | 13.7    | Firfox  | 29.0 (2860)  | landscape to portrait | ✅     |
-     | iPad OS  | 13.7    | Firfox  | 29.0 (2860)  | portrait to landscape | ❌     |
-     | iPad OS  | 13.7    | MS Edge | 45.9.5       | landscape to portrait | ✅     |
-     | iPad OS  | 13.7    | MS Edge | 45.9.5       | portrait to landscape | ✅     |
-     | iPad OS  | 13.7    | Safari  | 13.1.2       | landscape to portrait | ❌     |
-     | iPad OS  | 13.7    | Safari  | 13.1.2       | portrait to landscape | ✅     |
-     | Android  | 10      | Chrome  | 86.0.4240.99 | landscape to portrait | ✅     |
-     | Android  | 10      | Chrome  | 86.0.4240.99 | portrait to landscape | ✅     |
-     | Android  | 10      | Firfox  | 81.1.4       | landscape to portrait | ✅     |
-     | Android  | 10      | Firfox  | 81.1.4       | portrait to landscape | ✅     |
-     | Android  | 10      | MS Edge | 45.09.4.5079 | landscape to portrait | ✅     |
-     | Android  | 10      | MS Edge | 45.09.4.5079 | portrait to landscape | ✅     |
+      | Platform | Version | Browser | Version      | Operation             | Result |
+      |----------|---------|---------|--------------|-----------------------|:------:|
+      | iPad OS  | 13.7    | Chrome  | 86.0.4240.93 | landscape to portrait | ❌     |
+      | iPad OS  | 13.7    | Chrome  | 86.0.4240.93 | portrait to landscape | ❌     |
+      | iPad OS  | 13.7    | Firfox  | 29.0 (2860)  | landscape to portrait | ✅     |
+      | iPad OS  | 13.7    | Firfox  | 29.0 (2860)  | portrait to landscape | ❌     |
+      | iPad OS  | 13.7    | MS Edge | 45.9.5       | landscape to portrait | ✅     |
+      | iPad OS  | 13.7    | MS Edge | 45.9.5       | portrait to landscape | ✅     |
+      | iPad OS  | 13.7    | Safari  | 13.1.2       | landscape to portrait | ❌     |
+      | iPad OS  | 13.7    | Safari  | 13.1.2       | portrait to landscape | ✅     |
+      | Android  | 10      | Chrome  | 86.0.4240.99 | landscape to portrait | ✅     |
+      | Android  | 10      | Chrome  | 86.0.4240.99 | portrait to landscape | ✅     |
+      | Android  | 10      | Firfox  | 81.1.4       | landscape to portrait | ✅     |
+      | Android  | 10      | Firfox  | 81.1.4       | portrait to landscape | ✅     |
+      | Android  | 10      | MS Edge | 45.09.4.5079 | landscape to portrait | ✅     |
+      | Android  | 10      | MS Edge | 45.09.4.5079 | portrait to landscape | ✅     |
 
    + **How to Reproduce**
 
@@ -33,11 +34,12 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
       2. Rotate the device from landscape to portrait or the other way around.
       3. Read the `Window.innerWidth` and `Window.innerHeight`.
       4. Wait at least 500ms, manually update the read and check if they remain the same values.
-      5. repeat step 2 - 4 several times.
+      5. repeat above steps with different browsers.
 
-   + Why it happens: 
+   + **Why It Happens**
+
+      From the test results it shows that some browsers only fire the `resize` event during the rotating, i.e. when the `innerHeight` and `innerWidth` are not finalized.
+
+   + **How I Fixed It**
    
-
-
-   + How I fixed it:
-   
+      I created a short delay on the resize event listener, so it can read the final, correct properties. In practice, I find `500ms` a good delay for Chrome. For Firefox, it can be a little shorter, like `400ms`.
