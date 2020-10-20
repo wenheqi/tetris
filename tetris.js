@@ -1,5 +1,7 @@
 const ARENA_WIDTH = 240; // in pixels
 const ARENA_HEIGHT = 400; // in pixels
+const BLOCK_SIZE = 20; // basic tetromino block size, in pixels
+const FALL_INTERVAL = 500; // falling interval, in milliseconds
 
 const canvas = document.createElement("canvas");
 
@@ -12,8 +14,96 @@ document.getElementById("container").appendChild(canvas);
 
 const ctx = canvas.getContext("2d");
 
-ctx.fillStyle = "limegreen";
-ctx.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);
+const tetromino = {
+  data: [
+    [0, 0, 0],
+    [1, 1, 1],
+    [0, 1, 0]
+  ],
+  pos: {x: 0, y: 0},
+  timer: 0,
+}
+
+const colors = [
+  null,
+  "#FF0D72",
+  "#0DC2FF",
+  "#0DFF72",
+  "#F538FF",
+  "#FF8E0D",
+  "#FFE138",
+  "#3877FF",
+]
+
+function tetrominoMoveDown() {
+  tetromino.pos.y++;
+  tetromino.timer = 0;
+}
+
+let lastTime = 0;
+function update(time = 0) {
+  const deltaTime = time - lastTime;
+  lastTime = time;
+  
+  if ((tetromino.timer = tetromino.timer + deltaTime) >= FALL_INTERVAL) {
+    tetrominoMoveDown();  
+  }
+
+  
+  // draw arena (background)
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);
+  
+  // horizontal lines
+  for (let y = BLOCK_SIZE; y < ARENA_HEIGHT; y += BLOCK_SIZE) {
+    ctx.strokeStyle = "grey";
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(ARENA_WIDTH, y);
+    ctx.stroke();
+  }
+  
+  // vertical line
+  for (let x = BLOCK_SIZE; x < ARENA_WIDTH; x += BLOCK_SIZE) {
+    ctx.strokeStyle = "grey";
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, ARENA_HEIGHT);
+    ctx.stroke();
+  }
+
+  // drawTetrominoBlock(0, (ARENA_HEIGHT/BLOCK_SIZE - 1)  * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, "yellow");
+  
+  drawTetromino(tetromino.pos, tetromino.data);
+  
+  requestAnimationFrame(update);
+}
+
+function drawTetromino(offset, matrix) {
+  matrix.forEach((row, y) => {
+    row.forEach((val, x) => {
+      if (val !== 0) {
+        drawTetrominoBlock((offset.x + x) * BLOCK_SIZE,
+                           (offset.y + y) * BLOCK_SIZE,
+                           BLOCK_SIZE,
+                           BLOCK_SIZE,
+                           val);
+      }
+    })
+  })
+}
+
+function drawTetrominoBlock(x, y, width, height, color, thickness = 1, borderColor="grey") {
+  // border
+  ctx.fillStyle = borderColor;
+  ctx.fillRect(x, y, width, height);
+  
+  // inner rectangle
+  ctx.fillStyle = colors[color];
+  ctx.fillRect(x + thickness, y + thickness, width - 2 * thickness, height - 2 * thickness);
+}
+
+update();
 
 function enterFullscreen() {
   const elem = document.body;
