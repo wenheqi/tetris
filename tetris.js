@@ -64,5 +64,12 @@ function resizeGame(evt) {
   elem.style.width = newWidth + 'px';
 }
 
-onresize = resizeGame;
+function debounce(fn) {
+  
+}
+
+onresize = function(evt) {
+  setTimeout(resizeGame, 500);
+}
+
 onload = resizeGame;
