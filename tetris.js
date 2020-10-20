@@ -47,13 +47,15 @@ function resizeGame() {
   */
   const ratio = 4 / 3;
   const newRatio = innerHeight / innerWidth;
+  let newHeight;
+  let newWidth;
   if (newRatio > ratio) {
-    var newHeight = ratio * (innerWidth - 3);
-    var newWidth = (innerWidth - 3);
+    newHeight = ratio * (innerWidth - 3);
+    newWidth = (innerWidth - 3);
   }
   else {
-    var newHeight = innerHeight - 3;
-    var newWidth = (innerHeight - 3) / ratio;
+    newHeight = innerHeight - 3;
+    newWidth = (innerHeight - 3) / ratio;
   }
   const elem = document.getElementById("container");
   elem.style.height = newHeight + 'px';
