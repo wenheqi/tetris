@@ -12,7 +12,7 @@ document.getElementById("container").appendChild(canvas);
 
 const ctx = canvas.getContext("2d");
 
-ctx.fillStyle = "#000";
+ctx.fillStyle = "limegreen";
 ctx.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);
 
 
@@ -44,8 +44,7 @@ function exitFullscreen() {
   }
 }
 
-function resizeGame(evt) {
-  console.log("im in resize game")
+function resizeGame() {
   /* ratio = arena height / (arena width + stat panel width)
   ** ratio = 400 / (240 + 60) = 400 / 300 = 4 / 3
   */
@@ -64,12 +63,33 @@ function resizeGame(evt) {
   elem.style.width = newWidth + 'px';
 }
 
-function debounce(fn) {
-  
+/*
+** debounce, orginally implemented by John Hann, who also
+** coined the term
+** http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+*/
+function debounce(func, threshold, execAsap) {
+  var timeout;
+  return function debounced () {
+    var obj = this, args = arguments;
+    function delayed () {
+      if (!execAsap) {
+        func.apply(obj, args);
+      }
+      timeout = null; 
+    };
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    else if (execAsap) {
+      func.apply(obj, args);
+    }
+
+    timeout = setTimeout(delayed, threshold || 100); 
+  };
 }
 
-onresize = function(evt) {
-  setTimeout(resizeGame, 500);
-}
+onresize = debounce(resizeGame, 500, true);
 
 onload = resizeGame;
