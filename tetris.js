@@ -37,6 +37,29 @@ const colors = [
   "#3877FF",
 ]
 
+/*
+** check if tetromino collides with current arena;
+** return true iff collide happens.
+*/
+function collide() {
+  tetromino.data.forEach((row, y) => {
+    row.forEach((val, x) => {
+      if (val !== 0) { // non-empty block
+        const ax = tetromino.pos.x + x;
+        const ay = tetromino.pos.y + y;
+        if (ax < 0 ||
+            ax >= arena[0].length ||
+            ay >= arena.length ||
+            arena[ax][ay] !== 0
+           ) {
+          return true;
+        }
+      }
+    })
+  })
+  return false;
+}
+
 function createMatrix(width, height, val) {
   const matrix = [];
   while (height--) {
@@ -161,6 +184,13 @@ function exitFullscreen() {
   }
 }
 
+/*
+** merge current tetromino into arena
+*/
+function merge() {
+  
+}
+
 function resizeGame() {
   /* ratio = arena height / (arena width + stat panel width)
   ** ratio = 400 / (240 + 60) = 400 / 300 = 4 / 3
@@ -185,6 +215,28 @@ function resizeGame() {
 function tetrominoMoveDown() {
   tetromino.pos.y++;
   tetromino.timer = 0;
+  if (collide()) {
+    tetromino.pos.y--;
+    merge();
+    // TODO: create a new tetromino 
+    // and put to the top
+  }
+}
+
+function tetrominoMoveLeft() {
+  tetromino.pos.x--;
+  
+  if (collide()) {
+    tetromino.pos.x++;
+  }
+}
+
+function tetrominoMoveRight() {
+  tetromino.pos.x++;
+  
+  if (collide()) {
+    tetromino.pos.x--;
+  }
 }
 
 let lastTime = 0;
@@ -210,5 +262,20 @@ function update(time = 0) {
 onresize = debounce(resizeGame, 500, false);
 
 onload = resizeGame;
+
+onkeydown = function(evt) {
+  if (evt.keyCode == 37) { // ArrowLeft
+    tetrominoMoveLeft();
+  }
+  if (evt.keyCode == 38) { // ArrowUp
+      
+  }
+  else if (evt.keyCode == 39) { // ArrowRight
+    tetrominoMoveRight();
+  }
+  else if (evt.keyCode == 40) { // ArrowDown
+    tetrominoMoveDown();
+  }
+}
 
 update();
