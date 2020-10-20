@@ -11,10 +11,10 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
    
      | Platform|Version|Browser|Version|Operation|Result|
      |--------|-------------|-------|------|-------------|:-----:|
-     | iPad OS |13.7|Chrome| landscape to portrait | ❌ |
-     | iPad OS |13.7|Chrome| portrait to landscape | ❌ |
-     | iPad OS |13.7|Firfox| landscape to portrait |   ✅ |
-     | iPad OS |13.7|Firfox| portrait to landscape  |  ❌ |
+     | iPad OS |13.7|Chrome| 86.0.4240.93 | landscape to portrait | ❌ |
+     | iPad OS |13.7|Chrome| 86.0.4240.93 | portrait to landscape | ❌ |
+     | iPad OS |13.7|Firfox| 29.0 (2860) | landscape to portrait | ✅ |
+     | iPad OS |13.7|Firfox| 29.0 (2860) | portrait to landscape | ❌ |
 
    + How I fixed it:
    
