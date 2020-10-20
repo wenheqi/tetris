@@ -3,6 +3,19 @@ const ARENA_HEIGHT = 400; // in pixels
 const BLOCK_SIZE = 20; // basic tetromino block size, in pixels
 const FALL_INTERVAL = 500; // falling interval, in milliseconds
 
+const colors = [
+  "#000000",
+  "#FF0D72", // T
+  "#5F99EA", // O
+  "#B1ED2F", // L
+  "#F538FF", // J
+  "#FF8E0D", // I
+  "#FFE138", // S
+  "#00B4AB", // Z
+];
+
+const shapes = "TOLIJSZ";
+
 const canvas = document.createElement("canvas");
 
 // NOTE: in current design canvas size is the same as arena's
@@ -16,26 +29,13 @@ const ctx = canvas.getContext("2d");
 
 const arena = createMatrix(ARENA_WIDTH / BLOCK_SIZE, ARENA_HEIGHT / BLOCK_SIZE, 0);
 
+var queue = [];
+
 const tetromino = {
-  data: [
-    [0, 0, 0], // 0 - nothing
-    [1, 1, 1],
-    [0, 1, 0]
-  ],
+  data: [],
   pos: {x: 0, y: 0},
   timer: 0,
 }
-
-const colors = [
-  "#000000",
-  "#FF0D72",
-  "#0DC2FF",
-  "#0DFF72",
-  "#F538FF",
-  "#FF8E0D",
-  "#FFE138",
-  "#3877FF",
-]
 
 /*
 ** check if tetromino collides with current arena;
@@ -66,6 +66,68 @@ function createMatrix(width, height, val) {
     matrix.push(new Array(width).fill(val));
   }
   return matrix;
+}
+
+function createRandomTetromino() {
+  const idx = Math.random() * shapes.length | 0;
+  return createTetromino(shapes[idx]);
+}
+
+/*
+** Create a specified tetromino.
+** In the returned matrix, if an element is 0, it means
+** there is nothing; otherwise it's a solid block.
+*/
+function createTetromino(shape) {
+  if (shape === 'T') {
+    return [
+      [0, 0, 0],
+      [1, 1, 1],
+      [0, 1, 0],
+    ];
+  }
+  else if (shape === 'O') {
+    return [
+      [2, 2],
+      [2, 2],
+    ];
+  }
+  else if (shape === 'L') {
+    return [
+      [0, 3, 0],
+      [0, 3, 0],
+      [0, 3, 3],
+    ];
+  }
+  else if (shape === 'J') {
+    return [
+      [0, 4, 0],
+      [0, 4, 0],
+      [4, 4, 0],
+    ];
+  }
+  else if (shape === 'I') {
+    return [
+      [0, 5, 0, 0],
+      [0, 5, 0, 0],
+      [0, 5, 0, 0],
+      [0, 5, 0, 0],
+    ];
+  }
+  else if (shape === 'S') {
+    return [
+      [0, 0, 0],
+      [0, 6, 6],
+      [6, 6, 0],
+    ];
+  }
+  else if (shape === 'Z') {
+    return [
+      [7, 7, 0],
+      [0, 7, 7],
+      [0, 0, 0],
+    ];
+  }
 }
 
 /*
@@ -191,7 +253,23 @@ function exitFullscreen() {
 ** merge current tetromino into arena
 */
 function merge() {
-  
+  tetromino.data.forEach((row, y) => {
+    row.forEach((val, x) => {
+      if (val !== 0) { // non-empty block
+        const ax = tetromino.pos.x + x;
+        const ay = tetromino.pos.y + y;
+        arena[ay][ax] = val;
+      }
+    })
+  })
+}
+
+function resetGame() {
+  tetromino.data = createRandomTetromino();
+  tetromino.pos.y = 0;
+  tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
+  queue = [];
+  queue.push(createRandomTetromino());
 }
 
 function resizeGame() {
@@ -221,8 +299,11 @@ function tetrominoMoveDown() {
   if (collide()) {
     tetromino.pos.y--;
     merge();
-    // TODO: create a new tetromino 
-    // and put to the top
+    // take the next tetromino from queue and move it to top of the screen
+    tetromino.data = queue.shift();
+    tetromino.pos.y = 0;
+    tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length) | 0;
+    queue.push(createRandomTetromino());
   }
 }
 
@@ -281,4 +362,5 @@ onkeydown = function(evt) {
   }
 }
 
+resetGame();
 update();
