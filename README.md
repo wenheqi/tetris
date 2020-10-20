@@ -9,11 +9,12 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
    + How to reproduce: 
    + Why it happens: 
    
-     | Tables        | Are           | Cool  |
-     | ------------- |:-------------:| -----:|
-     | col 3 is      | right-aligned | $1600 |
-     | col 2 is      | centered      |   $12 |
-     | zebra stripes | are neat      |    $1 |
+     | Platform|Version|Browser|Version|Operation|Result|
+     |--------|-------------|-------|------|-------------|:-----:|
+     | iPad OS |13.7|Chrome| landscape to portrait | ❌ |
+     | iPad OS |13.7|Chrome| portrait to landscape | ❌ |
+     | iPad OS |13.7|Firfox| landscape to portrait |   ✅ |
+     | iPad OS |13.7|Firfox| portrait to landscape  |  ❌ |
 
    + How I fixed it:
    
