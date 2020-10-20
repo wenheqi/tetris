@@ -89,6 +89,6 @@ function debounce(func, threshold, execAsap) {
   };
 }
 
-onresize = debounce(resizeGame, 400, false);
+onresize = debounce(resizeGame, 500, false);
 
 onload = resizeGame;
