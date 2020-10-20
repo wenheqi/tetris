@@ -42,21 +42,21 @@ const colors = [
 ** return true iff collide happens.
 */
 function collide() {
-  tetromino.data.forEach((row, y) => {
-    row.forEach((val, x) => {
-      if (val !== 0) { // non-empty block
+  for (let y = 0; y < tetromino.data.length; y++) {
+    for (let x = 0; x < tetromino.data[0].length; x++) {
+      if (tetromino.data[y][x] !== 0) { // non-empty block
         const ax = tetromino.pos.x + x;
         const ay = tetromino.pos.y + y;
         if (ax < 0 ||
             ax >= arena[0].length ||
             ay >= arena.length ||
-            arena[ax][ay] !== 0
+            arena[ay][ax] !== 0
            ) {
           return true;
         }
       }
-    })
-  })
+    }
+  }
   return false;
 }
 
@@ -98,8 +98,8 @@ function debounce(func, threshold, execAsap) {
 function drawArena() {
   arena.forEach((row, y) => {
     row.forEach((val, x) => {
-      drawBlock(x * BLOCK_SIZE,
-                y * BLOCK_SIZE,
+      drawBlock(x,
+                y,
                 BLOCK_SIZE,
                 BLOCK_SIZE,
                 colors[val]);
@@ -112,12 +112,15 @@ function drawBlock(x, y, width, height, color, thickness = 0, borderColor="grey"
   // border
   if (thickness > 0) {
     ctx.fillStyle = borderColor;
-    ctx.fillRect(x, y, width, height);
+    ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, width, height);
   }  
 
   // inner rectangle
   ctx.fillStyle = color;
-  ctx.fillRect(x + thickness, y + thickness, width - 2 * thickness, height - 2 * thickness);
+  ctx.fillRect(x * BLOCK_SIZE + thickness,
+               y * BLOCK_SIZE + thickness,
+               width - 2 * thickness,
+               height - 2 * thickness);
   ctx.restore();
 }
 
@@ -147,12 +150,12 @@ function drawTetromino(offset, matrix) {
   matrix.forEach((row, y) => {
     row.forEach((val, x) => {
       if (val !== 0) {
-        drawBlock((offset.x + x) * BLOCK_SIZE,
-                           (offset.y + y) * BLOCK_SIZE,
-                           BLOCK_SIZE,
-                           BLOCK_SIZE,
-                           colors[val],
-                           1);
+        drawBlock(offset.x + x,
+                 offset.y + y,
+                 BLOCK_SIZE,
+                 BLOCK_SIZE,
+                 colors[val],
+                 1);
       }
     })
   })
