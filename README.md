@@ -4,7 +4,7 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
 
 # Issue History
 
-- Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `resize` event whenever `innerWidth` or `innerHeight` changes.
+- Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `resize` event every time `innerWidth` or `innerHeight` changes.
    + **What's the Impact**
 
       When user switch the orientation of their mobile device, the game will not resize to give the user best play experience, as the canvas size is not as big as it should be.
