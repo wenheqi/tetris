@@ -5,13 +5,11 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
 # Issue History
 
 - Chrome, Firefox and Safari on iPad Pro (13.7) cannot update `innerWidth` & `innerHeight` timely.
-   + **What's the impact**
+   + **What's the Impact**
 
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      When user switch the orientation of their mobile device, the game will not resize to give the user best play experience, as the canvas size is not as big as it should be.
+      From the folloing testing results we can see all the Chrome, Firefox and Safari users on iPadOS are impacted.
 
-   + How to reproduce: 
-   + Why it happens: 
-   
      | Platform | Version | Browser | Version      | Operation             | Result |
      |----------|---------|---------|--------------|-----------------------|:------:|
      | iPad OS  | 13.7    | Chrome  | 86.0.4240.93 | landscape to portrait | ❌     |
@@ -28,6 +26,18 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
      | Android  | 10      | Firfox  | 81.1.4       | portrait to landscape | ✅     |
      | Android  | 10      | MS Edge | 45.09.4.5079 | landscape to portrait | ✅     |
      | Android  | 10      | MS Edge | 45.09.4.5079 | portrait to landscape | ✅     |
+
+   + **How to Reproduce**
+
+      1. Use a mobile device (I only have iPad Pro and an Android phone at my hand), open a browser and go to the [helper](https://webtool.netlify.app/) I created (basically it reads the `Window.innerWidth` and `Window.innerHeight` whenever `resize` event is fired). 
+      2. Rotate the device from landscape to portrait or the other way around.
+      3. Read the `Window.innerWidth` and `Window.innerHeight`.
+      4. Wait at least 500ms, manually update the read and check if they remain the same values.
+      5. repeat step 2 - 4 several times.
+
+   + Why it happens: 
+   
+
 
    + How I fixed it:
    
