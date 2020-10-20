@@ -42,4 +42,4 @@ The classical game! Made by pure HTML5, CSS3 and JavaScript.
 
    + **How I Fixed It**
    
-      I created a short delay on the resize event listener, so it can read the final, correct properties. In practice, I find `500ms` a good delay for Chrome. For Firefox, it can be a little shorter, like `400ms`.
+      I created a short delay on the resize event listener, so it can read the final, correct properties. In practice, I find `500ms` a good delay for Chrome. For Firefox, it can be a little shorter, e.g. `400ms`.
