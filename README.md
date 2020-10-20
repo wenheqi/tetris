@@ -1,6 +1,6 @@
 # Tetris
 
-The classical game! Made by pure HTML5, CSS3 and JavaScript.
+The classic arcade game is back, on desktop and mobile devices! Try if you can achieve 999,999 points with less than 207 completed lines🤪 (p.s.: that's the world record❗❗❗)
 
 # Issue History
 
