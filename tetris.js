@@ -14,9 +14,11 @@ document.getElementById("container").appendChild(canvas);
 
 const ctx = canvas.getContext("2d");
 
+const arena = createMatrix(ARENA_WIDTH / BLOCK_SIZE, ARENA_HEIGHT / BLOCK_SIZE, 0);
+
 const tetromino = {
   data: [
-    [0, 0, 0],
+    [0, 0, 0], // 0 - nothing
     [1, 1, 1],
     [0, 1, 0]
   ],
@@ -25,7 +27,7 @@ const tetromino = {
 }
 
 const colors = [
-  null,
+  "#000000",
   "#FF0D72",
   "#0DC2FF",
   "#0DFF72",
@@ -35,25 +37,69 @@ const colors = [
   "#3877FF",
 ]
 
-function tetrominoMoveDown() {
-  tetromino.pos.y++;
-  tetromino.timer = 0;
+function createMatrix(width, height, val) {
+  const matrix = [];
+  while (height--) {
+    matrix.push(new Array(width).fill(val));
+  }
+  return matrix;
 }
 
-let lastTime = 0;
-function update(time = 0) {
-  const deltaTime = time - lastTime;
-  lastTime = time;
-  
-  if ((tetromino.timer = tetromino.timer + deltaTime) >= FALL_INTERVAL) {
-    tetrominoMoveDown();  
-  }
+/*
+** debounce, orginally implemented by John Hann, who also
+** coined the term
+** http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+*/
+function debounce(func, threshold, execAsap) {
+  var timeout;
+  return function debounced () {
+    var obj = this, args = arguments;
+    function delayed () {
+      if (!execAsap) {
+        func.apply(obj, args);
+      }
+      timeout = null; 
+    };
 
-  
-  // draw arena (background)
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, ARENA_WIDTH, ARENA_HEIGHT);
-  
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    else if (execAsap) {
+      func.apply(obj, args);
+    }
+
+    timeout = setTimeout(delayed, threshold || 100); 
+  };
+}
+
+function drawArena() {
+  arena.forEach((row, y) => {
+    row.forEach((val, x) => {
+      drawBlock(x * BLOCK_SIZE,
+                y * BLOCK_SIZE,
+                BLOCK_SIZE,
+                BLOCK_SIZE,
+                colors[val]);
+    })
+  })
+}
+
+function drawBlock(x, y, width, height, color, thickness = 0, borderColor="grey") {
+  ctx.save();
+  // border
+  if (thickness > 0) {
+    ctx.fillStyle = borderColor;
+    ctx.fillRect(x, y, width, height);
+  }  
+
+  // inner rectangle
+  ctx.fillStyle = color;
+  ctx.fillRect(x + thickness, y + thickness, width - 2 * thickness, height - 2 * thickness);
+  ctx.restore();
+}
+
+function drawGrids() {
+  ctx.save();
   // horizontal lines
   for (let y = BLOCK_SIZE; y < ARENA_HEIGHT; y += BLOCK_SIZE) {
     ctx.strokeStyle = "grey";
@@ -71,39 +117,23 @@ function update(time = 0) {
     ctx.lineTo(x, ARENA_HEIGHT);
     ctx.stroke();
   }
-
-  // drawTetrominoBlock(0, (ARENA_HEIGHT/BLOCK_SIZE - 1)  * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, "yellow");
-  
-  drawTetromino(tetromino.pos, tetromino.data);
-  
-  requestAnimationFrame(update);
+  ctx.restore();
 }
 
 function drawTetromino(offset, matrix) {
   matrix.forEach((row, y) => {
     row.forEach((val, x) => {
       if (val !== 0) {
-        drawTetrominoBlock((offset.x + x) * BLOCK_SIZE,
+        drawBlock((offset.x + x) * BLOCK_SIZE,
                            (offset.y + y) * BLOCK_SIZE,
                            BLOCK_SIZE,
                            BLOCK_SIZE,
-                           val);
+                           colors[val],
+                           1);
       }
     })
   })
 }
-
-function drawTetrominoBlock(x, y, width, height, color, thickness = 1, borderColor="grey") {
-  // border
-  ctx.fillStyle = borderColor;
-  ctx.fillRect(x, y, width, height);
-  
-  // inner rectangle
-  ctx.fillStyle = colors[color];
-  ctx.fillRect(x + thickness, y + thickness, width - 2 * thickness, height - 2 * thickness);
-}
-
-update();
 
 function enterFullscreen() {
   const elem = document.body;
@@ -152,33 +182,33 @@ function resizeGame() {
   elem.style.width = newWidth + 'px';
 }
 
-/*
-** debounce, orginally implemented by John Hann, who also
-** coined the term
-** http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
-*/
-function debounce(func, threshold, execAsap) {
-  var timeout;
-  return function debounced () {
-    var obj = this, args = arguments;
-    function delayed () {
-      if (!execAsap) {
-        func.apply(obj, args);
-      }
-      timeout = null; 
-    };
+function tetrominoMoveDown() {
+  tetromino.pos.y++;
+  tetromino.timer = 0;
+}
 
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    else if (execAsap) {
-      func.apply(obj, args);
-    }
+let lastTime = 0;
+function update(time = 0) {
+  const deltaTime = time - lastTime;
+  lastTime = time;
+  
+  if ((tetromino.timer = tetromino.timer + deltaTime) >= FALL_INTERVAL) {
+    tetrominoMoveDown();  
+  }
 
-    timeout = setTimeout(delayed, threshold || 100); 
-  };
+  
+  // draw arena (background)
+  drawArena();
+  
+  drawGrids();
+  
+  drawTetromino(tetromino.pos, tetromino.data);
+  
+  requestAnimationFrame(update);
 }
 
 onresize = debounce(resizeGame, 500, false);
 
 onload = resizeGame;
+
+update();
