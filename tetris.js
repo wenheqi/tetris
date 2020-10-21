@@ -82,6 +82,10 @@ const player = {
   lines: 0,
 }
 
+const backgroundSound = new Sound("./tracks/bgm.mp3", 2, true);
+const successSound = new Sound("./tracks/power-up.wav");
+const failureSound = new Sound("./tracks/failure.wav");
+
 const tetromino = {
   data: [],
   lastTime: 0,
@@ -102,6 +106,7 @@ function clearCompleteLines() {
       arena.unshift(row);
       y++;
       lines++;
+      successSound.play();
     }
   }
   // calculate score
@@ -375,6 +380,8 @@ function merge() {
         // when merge one not in game scence, it implies the game is over
         if (ax < 0 || ay < 0) {
           player.isGameOver = true;
+          backgroundSound.stop();
+          failureSound.play();
         }
         else {
           arena[ay][ax] = val;
@@ -443,6 +450,29 @@ function rotate(matrix, clockwise) {
   }
 }
 
+function Sound(src, speed = 1, loop = false) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.playbackRate = speed;
+  this.sound.loop = loop;
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+
+  this.play = function() {
+    this.sound.play();
+  }
+
+  this.pause = function() {
+    this.sound.pause();
+  }
+
+  this.stop = function() {
+    this.sound.pause();
+  }
+}
+
 function tetrominoMoveDown() {
   tetromino.pos.y++;
   tetromino.timer = 0;
@@ -459,6 +489,8 @@ function tetrominoMoveDown() {
     if (collide()) {
       tetromino.pos.y--;
       player.isGameOver = true;
+      backgroundSound.stop();
+      failureSound.play();
     }
   }
 }
@@ -561,10 +593,20 @@ onkeydown = function(evt) {
 document.getElementById("restart-btn").onclick = (evt) => {
   resetGame();
   player.isPlaying = true;
+  backgroundSound.play();
 }
 
 document.getElementById("play-btn").onclick = (evt) => {
   player.isPlaying = !player.isPlaying;
+  if (player.isPlaying && !player.isGameOver) {
+    backgroundSound.play();
+  }
+  else if (player.isGameOver) {
+    backgroundSound.stop();
+  }
+  else {
+    backgroundSound.pause(); 
+  }
 }
 
 resetGame();
