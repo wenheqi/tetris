@@ -5,7 +5,7 @@ const BLOCK_SIZE = 20; // basic tetromino block size, in pixels
 const colors = [
   "#000000",
   "#FF0D72", // T
-  "#5F99EA", // O
+  "#0ACAF7", // O
   "#B1ED2F", // L
   "#F538FF", // J
   "#FF8E0D", // I
