@@ -400,7 +400,7 @@ function tetrominoMoveDown() {
     // take the next tetromino from queue and move it to top of the screen
     tetromino.data = queue.shift();
     tetromino.pos.y = 0;
-    tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length) | 0;
+    tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
     queue.push(createRandomTetromino());
   }
 }
