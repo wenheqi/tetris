@@ -239,6 +239,8 @@ function debounce(func, threshold, execAsap) {
 }
 
 function displayStatPanel() {
+  let best = localStorage ? localStorage.getItem("bestScore") : "--";
+  document.getElementById("bestScore").innerHTML = best ? best : "0";
   document.getElementById("score").innerHTML = player.score;
   document.getElementById("line").innerHTML = player.lines;
   document.getElementById("level").innerHTML = player.level;
@@ -500,8 +502,21 @@ function update(time = 0) {
   
   // draw next tetromino
   drawNext();
+  
+  if (player.isGameOver) {
+    updateScore();
+  }
 
   requestAnimationFrame(update);
+}
+
+function updateScore() {
+  if (localStorage) {
+    let currBest = localStorage.getItem("bestScore");
+    if (!currBest || currBest < player.score) {
+      localStorage.setItem("bestScore", player.score);
+    }
+  }
 }
 
 onresize = debounce(resizeGame, 500, false);
