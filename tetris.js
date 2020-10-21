@@ -244,6 +244,8 @@ function displayStatPanel() {
   document.getElementById("score").innerHTML = player.score;
   document.getElementById("line").innerHTML = player.lines;
   document.getElementById("level").innerHTML = player.level;
+  // draw next tetromino
+  drawNext();
 }
 
 function drawArena() {
@@ -499,10 +501,7 @@ function update(time = 0) {
   drawTetromino(ctx, tetromino.pos, tetromino.data);
   
   displayStatPanel();
-  
-  // draw next tetromino
-  drawNext();
-  
+
   if (player.isGameOver) {
     updateScore();
   }

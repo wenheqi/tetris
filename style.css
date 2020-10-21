@@ -31,6 +31,7 @@ body {
   */
   width: 19%;
   text-align: center;
+  font-size: 2vh; /* max: 100vh/24 ~= 4vh */
 }
 
 #next-canvas {
