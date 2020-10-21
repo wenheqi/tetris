@@ -14,6 +14,8 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
    + A discussion at [StackExchange](https://gamedev.stackexchange.com/questions/159835/understanding-tetris-speed-curve)
       The proposed solution should be able to simulate the drop rate, but the user moves may not be possible, which is also mentioned in the accepted answer. So currently I'm carrying on with this issue.
 
+- Modal cannot be closed in Firefox and Safari on iPad OS
+
 # Issue History
 
 - Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `resize` event every time `innerWidth` or `innerHeight` changes.
