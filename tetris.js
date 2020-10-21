@@ -108,6 +108,7 @@ function clearCompleteLines() {
   else if (lines === 2) { player.score += 300; }
   else if (lines === 3) { player.score += 500; }
   else if (lines === 4) { player.score += 800; }
+  player.lines += lines;
 }
 
 /*
