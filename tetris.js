@@ -72,6 +72,8 @@ const nextCtx = nextCanvas.getContext("2d");
 
 const arena = createMatrix(ARENA_WIDTH / BLOCK_SIZE, ARENA_HEIGHT / BLOCK_SIZE, 0);
 
+const modal = document.getElementById("modal");
+
 var queue = [];
 
 const player = {
@@ -588,6 +590,13 @@ function updateScore() {
   }
 }
 
+onclick = function(evt) {
+  // close the modal window when click on it
+  if (evt.target === modal) {
+    modal.style.display = "none";
+  }
+}
+
 onresize = debounce(resizeGame, 500, false);
 
 onload = resizeGame;
@@ -610,6 +619,10 @@ onkeydown = function(evt) {
 
 document.getElementById("restart-btn").onclick = (evt) => {
   playNewGame();
+}
+
+document.getElementById("setting-btn").onclick = (evt) => {
+  modal.style.display = "block";
 }
 
 document.getElementById("play-btn").onclick = (evt) => {

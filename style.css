@@ -19,6 +19,20 @@ body {
   margin: 0;
 }
 
+#modal {
+  position:fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #202028;
+  z-index: 1;
+  opacity: 0.5;
+  display: none;
+}
+
+#next-canvas {
+  width: 100%;
+}
+
 #stat-panel {
   float:right;
   display: flex;
@@ -32,10 +46,6 @@ body {
   width: 19%;
   text-align: center;
   font-size: 2vh; /* max: 100vh/24 ~= 4vh */
-}
-
-#next-canvas {
-  width: 100%;
 }
 
 #tetris-canvas {
