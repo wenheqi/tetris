@@ -355,7 +355,13 @@ function merge() {
       if (val !== 0) { // non-empty block
         const ax = tetromino.pos.x + x;
         const ay = tetromino.pos.y + y;
-        arena[ay][ax] = val;
+        // when merge one not in game scence, it implies the game is over
+        if (ax < 0 || ay < 0) {
+          player.isGameOver = true;
+        }
+        else {
+          arena[ay][ax] = val;
+        }
       }
     })
   })
@@ -477,7 +483,7 @@ function update(time = 0) {
   const deltaTime = time - tetromino.lastTime;
   tetromino.lastTime = time;
   
-  if ((tetromino.timer = tetromino.timer + deltaTime) >= intervals[player.level]) {
+  if (!player.isGameOver && (tetromino.timer = tetromino.timer + deltaTime) >= intervals[player.level]) {
     tetrominoMoveDown();  
   }
 
