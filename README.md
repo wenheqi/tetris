@@ -2,7 +2,7 @@
 
 The classic arcade game is back, on desktop and mobile devices! Try if you can achieve 999,999 points with less than 207 completed lines🤪 (p.s.: that's the world record❗❗❗)
 
-# Lesson Learned
+# Things Worth to Note
 
 - Strokes are aligned to the center of a path; in other words, half of the stroke is drawn on the inner side, and half on the outer side.
 
