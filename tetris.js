@@ -71,14 +71,15 @@ var queue = [];
 
 const player = {
   score: 0,
+  isGameOver: false,
+  level: 5,
   lines: 0,
-  level: 1
 }
 
 const tetromino = {
   data: [],
   lastTime: 0,
-  pos: {x: 0, y: 0},
+  pos: {x: 0, y: -4},
   timer: 0,
 }
 
@@ -114,6 +115,10 @@ function collide() {
       if (tetromino.data[y][x] !== 0) { // non-empty block
         const ax = tetromino.pos.x + x;
         const ay = tetromino.pos.y + y;
+        // tetromino is not in game scene yet
+        if (ay < 0) { continue; }
+        // a non-empty block should not be out of boarder
+        // or overlap with non-empty part of arena
         if (ax < 0 ||
             ax >= arena[0].length ||
             ay >= arena.length ||
@@ -190,9 +195,9 @@ function createTetromino(shape) {
   }
   else if (shape === 'Z') {
     return [
+      [0, 0, 0],
       [7, 7, 0],
       [0, 7, 7],
-      [0, 0, 0],
     ];
   }
 }
@@ -340,7 +345,7 @@ function merge() {
 
 function resetGame() {
   tetromino.data = createRandomTetromino();
-  tetromino.pos.y = 0;
+  tetromino.pos.y = -4;
   tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
   tetromino.lastTime = 0;
   tetromino.timer = 0;
@@ -392,6 +397,7 @@ function rotate(matrix, clockwise) {
 }
 
 function tetrominoMoveDown() {
+  if (player.isGameOver) { return; }
   tetromino.pos.y++;
   tetromino.timer = 0;
   if (collide()) {
@@ -399,9 +405,14 @@ function tetrominoMoveDown() {
     merge();
     // take the next tetromino from queue and move it to top of the screen
     tetromino.data = queue.shift();
-    tetromino.pos.y = 0;
+    tetromino.pos.y = -4;
     tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
     queue.push(createRandomTetromino());
+    // game might be over at this time
+    if (collide()) {
+      tetromino.pos.y--;
+      player.isGameOver = true;
+    }
   }
 }
 
@@ -470,6 +481,7 @@ onresize = debounce(resizeGame, 500, false);
 onload = resizeGame;
 
 onkeydown = function(evt) {
+  if (player.isGameOver) { return; }
   if (evt.keyCode == 37) { // ArrowLeft
     tetrominoMoveLeft();
   }
