@@ -63,7 +63,12 @@ canvas.id="tetris-canvas";
 
 document.getElementById("container").appendChild(canvas);
 
+const nextCanvas = document.getElementById("next-canvas");
+nextCanvas.width = 80;
+nextCanvas.height = 80;
+
 const ctx = canvas.getContext("2d");
+const nextCtx = nextCanvas.getContext("2d");
 
 const arena = createMatrix(ARENA_WIDTH / BLOCK_SIZE, ARENA_HEIGHT / BLOCK_SIZE, 0);
 
@@ -115,15 +120,18 @@ function collide() {
       if (tetromino.data[y][x] !== 0) { // non-empty block
         const ax = tetromino.pos.x + x;
         const ay = tetromino.pos.y + y;
-        // tetromino is not in game scene yet
-        if (ay < 0) { continue; }
+        // tetromino is not in game scene yet,
+        // but left & right may still collide
+        if (ay < 0 && (ax < 0 || ax >= arena[0].length)) {
+          return true;
+        }
         // a non-empty block should not be out of boarder
         // or overlap with non-empty part of arena
-        if (ax < 0 ||
+        else if (ay >= 0 && (ax < 0 ||
             ax >= arena[0].length ||
             ay >= arena.length ||
             arena[ay][ax] !== 0
-           ) {
+           )) {
           return true;
         }
       }
@@ -238,7 +246,8 @@ function displayStatPanel() {
 function drawArena() {
   arena.forEach((row, y) => {
     row.forEach((val, x) => {
-      drawBlock(x,
+      drawBlock(ctx,
+                x,
                 y,
                 BLOCK_SIZE,
                 BLOCK_SIZE,
@@ -247,7 +256,7 @@ function drawArena() {
   })
 }
 
-function drawBlock(x, y, width, height, color, thickness = 0, borderColor="grey") {
+function drawBlock(ctx, x, y, width, height, color, thickness = 0, borderColor="grey") {
   ctx.save();
   // border
   if (thickness > 0) {
@@ -286,16 +295,25 @@ function drawGrids() {
   ctx.restore();
 }
 
-function drawTetromino(offset, matrix) {
+function drawNext() {
+  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  drawTetromino(nextCtx,
+                {x: 2 - queue[0][0].length / 2,
+                 y: 2 - queue[0].length / 2},
+                queue[0]);
+}
+
+function drawTetromino(ctx, offset, matrix) {
   matrix.forEach((row, y) => {
     row.forEach((val, x) => {
       if (val !== 0) {
-        drawBlock(offset.x + x,
-                 offset.y + y,
-                 BLOCK_SIZE,
-                 BLOCK_SIZE,
-                 colors[val],
-                 1);
+        drawBlock(ctx,
+                  offset.x + x,
+                  offset.y + y,
+                  BLOCK_SIZE,
+                  BLOCK_SIZE,
+                  colors[val],
+                  1);
       }
     })
   })
@@ -469,9 +487,12 @@ function update(time = 0) {
   drawGrids();
   
   // draw tetromino
-  drawTetromino(tetromino.pos, tetromino.data);
+  drawTetromino(ctx, tetromino.pos, tetromino.data);
   
   displayStatPanel();
+  
+  // draw next tetromino
+  drawNext();
 
   requestAnimationFrame(update);
 }

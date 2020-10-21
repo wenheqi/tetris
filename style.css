@@ -33,6 +33,10 @@ body {
   text-align: center;
 }
 
+#next-canvas {
+  width: 100%;
+}
+
 #tetris-canvas {
   border: solid 2px #ffffff;
   width: 80%;

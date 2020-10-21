@@ -8,13 +8,14 @@
     <meta name="author" content="Wenhe Qi" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="fontawesome-free-5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div id="container">
       <div id="stat-panel">
         <div>Best</div>
-        <div>9999999</div>
+        <div>999999</div>
         <div>Score</div>
         <div id="score"></div>
         <div>Line</div>
@@ -22,9 +23,18 @@
         <div>Level</div>
         <div id="level"></div>
         <div>Next</div>
-        <div>L</div>
-        <div>Settings</div>
-        <div>Play</div>
+        <div>
+          <canvas id="next-canvas"></canvas>
+        </div>
+        <div> <!-- Start over -->
+          <i class="fas fa-redo fa-lg"></i>
+        </div>
+        <div> <!-- Settings -->
+          <i class="fas fa-cog fa-lg"></i>
+        </div>
+        <div> <!-- Play/Resume -->
+          <i class="fas fa-play fa-lg"></i>
+        </div>
       </div>
     </div>
     <script type="text/javascript" src="tetris.js"></script>
