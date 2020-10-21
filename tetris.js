@@ -293,6 +293,28 @@ function resizeGame() {
   elem.style.width = newWidth + 'px';
 }
 
+function rotate(matrix, clockwise) {
+  // transpose
+  for (let y = 0; y < tetromino.data.length; y++) {
+    for (let x = 0; x < y; x++) {
+      [
+        tetromino.data[x][y],
+        tetromino.data[y][x]
+      ] = [
+        tetromino.data[y][x],
+        tetromino.data[x][y]
+      ]
+    }
+  }
+
+  if (clockwise) { // reverse items in each row
+    tetromino.data.forEach((row) => { row.reverse(); })
+  }
+  else { // reverse rows
+    tetromino.data.reverse();
+  }
+}
+
 function tetrominoMoveDown() {
   tetromino.pos.y++;
   tetromino.timer = 0;
@@ -323,6 +345,28 @@ function tetrominoMoveRight() {
   }
 }
 
+function tetrominoRotate() {
+  rotate(tetromino.data, true);
+  if (!collide()) { return; }
+  /*
+  ** Above rotation may not be possible due to collision,
+  ** e.g. an "I" in between of many tetrominos.
+  ** In this case we try to avoid collision after rotation,
+  ** but after 8 attempts, we know we can never make it,
+  ** hence we restore the x coordinate
+  */
+  const ox = tetromino.pos.x;
+  let offset = 1;
+  for (let i = 0; i < 8; i++) {
+    tetromino.pos.x += offset;
+    if (!collide()) { return; }
+    offset = - (offset + (offset > 0 ? 1 : -1));
+  }
+  // rotation not possible, restore data back
+  tetromino.pos.x = ox;
+  rotate(tetromino.data, false);
+}
+
 let lastTime = 0;
 function update(time = 0) {
   const deltaTime = time - lastTime;
@@ -332,7 +376,6 @@ function update(time = 0) {
     tetrominoMoveDown();  
   }
 
-  
   // draw arena (background)
   drawArena();
   
@@ -352,7 +395,7 @@ onkeydown = function(evt) {
     tetrominoMoveLeft();
   }
   if (evt.keyCode == 38) { // ArrowUp
-      
+    tetrominoRotate();
   }
   else if (evt.keyCode == 39) { // ArrowRight
     tetrominoMoveRight();
