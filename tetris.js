@@ -76,7 +76,8 @@ var queue = [];
 
 const player = {
   score: 0,
-  isGameOver: false,
+  isGameOver: true,
+  isPlaying: false,
   level: 5,
   lines: 0,
 }
@@ -244,8 +245,20 @@ function displayStatPanel() {
   document.getElementById("score").innerHTML = player.score;
   document.getElementById("line").innerHTML = player.lines;
   document.getElementById("level").innerHTML = player.level;
+
   // draw next tetromino
   drawNext();
+  
+  // draw play/resume button
+  let playBtn = document.querySelector("div#play-btn i");
+  if (player.isPlaying && playBtn.classList.contains("fa-play")) {
+    playBtn.classList.remove("fa-play");
+    playBtn.classList.add("fa-pause");
+  }
+  else if (!player.isPlaying && playBtn.classList.contains("fa-pause")) {
+    playBtn.classList.remove("fa-pause");
+    playBtn.classList.add("fa-play");
+  }
 }
 
 function drawArena() {
@@ -380,6 +393,11 @@ function resetGame() {
   tetromino.timer = 0;
   queue = [];
   queue.push(createRandomTetromino());
+  player.isGameOver = false;
+  player.lines = 0;
+  player.score = 0;
+  player.isPlaying = false;
+  arena.forEach(row => { row.fill(0); })
 }
 
 function resizeGame() {
@@ -487,7 +505,9 @@ function update(time = 0) {
   const deltaTime = time - tetromino.lastTime;
   tetromino.lastTime = time;
   
-  if (!player.isGameOver && (tetromino.timer = tetromino.timer + deltaTime) >= intervals[player.level]) {
+  if (!player.isGameOver &&
+      player.isPlaying &&
+      (tetromino.timer = tetromino.timer + deltaTime) >= intervals[player.level]) {
     tetrominoMoveDown();  
   }
 
@@ -523,7 +543,7 @@ onresize = debounce(resizeGame, 500, false);
 onload = resizeGame;
 
 onkeydown = function(evt) {
-  if (player.isGameOver) { return; }
+  if (player.isGameOver || !player.isPlaying) { return; }
   if (evt.keyCode == 37) { // ArrowLeft
     tetrominoMoveLeft();
   }
@@ -538,5 +558,15 @@ onkeydown = function(evt) {
   }
 }
 
+document.getElementById("restart-btn").onclick = (evt) => {
+  resetGame();
+  player.isPlaying = true;
+}
+
+document.getElementById("play-btn").onclick = (evt) => {
+  player.isPlaying = !player.isPlaying;
+}
+
 resetGame();
+
 update();
