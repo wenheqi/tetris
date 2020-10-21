@@ -31,24 +31,39 @@ const arena = createMatrix(ARENA_WIDTH / BLOCK_SIZE, ARENA_HEIGHT / BLOCK_SIZE, 
 
 var queue = [];
 
+const player = {
+  score: 0,
+  lines: 0,
+  level: 1
+}
+
 const tetromino = {
   data: [],
+  lastTime: 0,
   pos: {x: 0, y: 0},
   timer: 0,
 }
 
 /*
 ** Check if there is (are) empty line(s) and remove it (them).
+** In addition, calculate score according to https://tetris.wiki/Scoring.
 */
 function clearCompleteLines() {
+  let lines = 0;
   for (let y = arena.length - 1; y >= 0; y--) {
     if (!arena[y].includes(0)) { // complete line
       let row = arena.splice(y, 1)[0].fill(0);
       // put this row back to top
       arena.unshift(row);
       y++;
+      lines++;
     }
   }
+  // calculate score
+  if (lines === 1) { player.score += 100; }
+  else if (lines === 2) { player.score += 300; }
+  else if (lines === 3) { player.score += 500; }
+  else if (lines === 4) { player.score += 800; }
 }
 
 /*
@@ -171,6 +186,12 @@ function debounce(func, threshold, execAsap) {
   };
 }
 
+function displayStatPanel() {
+  document.getElementById("score").innerHTML = player.score;
+  document.getElementById("line").innerHTML = player.lines;
+  document.getElementById("level").innerHTML = player.level;
+}
+
 function drawArena() {
   arena.forEach((row, y) => {
     row.forEach((val, x) => {
@@ -283,6 +304,8 @@ function resetGame() {
   tetromino.data = createRandomTetromino();
   tetromino.pos.y = 0;
   tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
+  tetromino.lastTime = 0;
+  tetromino.timer = 0;
   queue = [];
   queue.push(createRandomTetromino());
 }
@@ -382,10 +405,9 @@ function tetrominoRotate() {
   rotate(tetromino.data, false);
 }
 
-let lastTime = 0;
 function update(time = 0) {
-  const deltaTime = time - lastTime;
-  lastTime = time;
+  const deltaTime = time - tetromino.lastTime;
+  tetromino.lastTime = time;
   
   if ((tetromino.timer = tetromino.timer + deltaTime) >= FALL_INTERVAL) {
     tetrominoMoveDown();  
@@ -394,10 +416,14 @@ function update(time = 0) {
   // draw arena (background)
   drawArena();
   
+  // draw grids
   drawGrids();
   
+  // draw tetromino
   drawTetromino(tetromino.pos, tetromino.data);
   
+  displayStatPanel();
+
   requestAnimationFrame(update);
 }
 
