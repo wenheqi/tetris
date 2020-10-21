@@ -78,10 +78,13 @@ var queue = [];
 
 const player = {
   score: 0,
+  isFullScreen: false,
   isGameOver: true,
   isPlaying: false,
-  level: 5,
+  level: 1,
   lines: 0,
+  playBGM: false,
+  playSound: false,
 }
 
 const backgroundSound = new Sound("./tracks/bgm.mp3", true);
@@ -108,7 +111,7 @@ function clearCompleteLines() {
       arena.unshift(row);
       y++;
       lines++;
-      successSound.play();
+      if (player.playSound) { successSound.play(); }
     }
   }
   // calculate score
@@ -384,7 +387,7 @@ function merge() {
           player.isGameOver = true;
           player.isPlaying = false;
           backgroundSound.stop();
-          failureSound.play();
+          if (player.playSound) { failureSound.play(); }
         }
         else {
           arena[ay][ax] = val;
@@ -400,7 +403,7 @@ function playNewGame() {
   player.isPlaying = true;
   backgroundSound.setPlaybackRate(1 + (player.level - 1) * 0.1);
   backgroundSound.setCurrentTime(0);
-  backgroundSound.play();
+  if (player.playBGM) { backgroundSound.play(); }
 }
 
 function resetGame() {
@@ -510,7 +513,7 @@ function tetrominoMoveDown() {
       player.isGameOver = true;
       player.isPlaying = false;
       backgroundSound.stop();
-      failureSound.play();
+      if (player.playSound) { failureSound.play(); }
     }
   }
 }
@@ -632,7 +635,69 @@ document.getElementById("play-btn").onclick = (evt) => {
   }
   else { // toggle play/resume status
     player.isPlaying = !player.isPlaying;
-    player.isPlaying ? backgroundSound.play() : backgroundSound.pause();
+    if (player.playBGM) {
+      player.isPlaying ? backgroundSound.play() : backgroundSound.pause();  
+    }
+  }
+}
+
+document.getElementById("modal-close-btn").onclick = (evt) => {
+  modal.style.display = "none";
+}
+
+document.getElementById("decLevel").onclick = (evt) => {
+  if (player.level > 1) { player.level--; }
+  document.getElementById("levelVal").textContent = player.level;
+}
+
+document.getElementById("incLevel").onclick = (evt) => {
+  if (player.level < 15) { player.level++; }
+  document.getElementById("levelVal").textContent = player.level;
+}
+
+document.getElementById("bgm-toggle-btn").onclick = (evt) => {
+  player.playBGM = !player.playBGM;
+  // check
+  if (player.playBGM) {
+    evt.target.classList.remove("fa-square");
+    evt.target.classList.add("fa-check-square");
+    backgroundSound.play();
+  }
+  // uncheck
+  else {
+    evt.target.classList.remove("fa-check-square");
+    evt.target.classList.add("fa-square");
+    backgroundSound.stop();
+  }
+}
+
+document.getElementById("sound-toggle-btn").onclick = (evt) => {
+  player.playSound = !player.playSound;
+  // check
+  if (player.playSound) {
+    evt.target.classList.remove("fa-square");
+    evt.target.classList.add("fa-check-square");
+  }
+  // uncheck
+  else {
+    evt.target.classList.remove("fa-check-square");
+    evt.target.classList.add("fa-square");
+  }
+}
+
+document.getElementById("fullscreen-toggle-btn").onclick = (evt) => {
+  player.isFullScreen = !player.isFullScreen;
+  // check
+  if (player.isFullScreen) {
+    evt.target.classList.remove("fa-square");
+    evt.target.classList.add("fa-check-square");
+    enterFullscreen();
+  }
+  // uncheck
+  else {
+    evt.target.classList.remove("fa-check-square");
+    evt.target.classList.add("fa-square");
+    exitFullscreen();
   }
 }
 

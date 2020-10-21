@@ -56,8 +56,8 @@ body {
   padding-bottom: 5px;
 }
 
-.modal-close {
-  
+#modal-close-btn {
+  padding-bottom: 5px;
 }
 
 .modal-body {
@@ -117,20 +117,20 @@ body {
 /*Medium devices (tablets, 768px and up)*/
 @media (min-width: 768px) {
   .modal-content{
-    width: 60%;
+    width: 70%;
   }
 }
 
 /*Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) {
   .modal-content{
-    width: 50%;
+    width: 60%;
   }
 }
 
 /*Extra large devices (large desktops, 1200px and up)*/
 @media (min-width: 1200px) {
   .modal-content{
-    width: 50%;
+    width: 60%;
   }
 }

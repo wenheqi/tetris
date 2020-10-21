@@ -4,6 +4,8 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
 
 # Things Worth to Note
 
+- Do not 100% trust developer tools in browsers. Sometimes the behaviors are different. Try a real device if it's possible.
+
 - Strokes are aligned to the center of a path; in other words, half of the stroke is drawn on the inner side, and half on the outer side.
 
 - There is no way to stop a `forEach` loop other than by trowing an exception.
@@ -15,6 +17,8 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
       The proposed solution should be able to simulate the drop rate, but the user moves may not be possible, which is also mentioned in the accepted answer. So currently I'm carrying on with this issue.
 
 - Modal cannot be closed in Firefox and Safari on iPad OS
+
+- Settings modal window is still translucent.
 
 # Issue History
 
