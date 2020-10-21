@@ -1,7 +1,6 @@
 const ARENA_WIDTH = 240; // in pixels
 const ARENA_HEIGHT = 400; // in pixels
 const BLOCK_SIZE = 20; // basic tetromino block size, in pixels
-const FALL_INTERVAL = 500; // falling interval, in milliseconds
 
 const colors = [
   "#000000",
@@ -13,6 +12,45 @@ const colors = [
   "#FFE138", // S
   "#00B4AB", // Z
 ];
+
+/*
+** ref: https://harddrop.com/wiki/Tetris_Worlds
+** 1G = 1 cell per frame
+** Time = (0.8-((Level-1)*0.007))^(Level-1)
+** Level 1: 0.01667G -> 1s
+** Level 2: 0.021017G -> 0.793s
+** Level 3: 0.026977G -> 0.617796s
+** Level 4: 0.035256G -> 0.472729139s
+** Level 5: 0.04693G -> 0.35519692825s
+** Level 6: 0.06361G -> 0.26200354997s
+** Level 7: 0.0879G -> 0.18967724533s
+** Level 8: 0.1236G -> 0.13473473081s
+** Level 9: 0.1775G -> 0.0938822489s
+** Level 10: 0.2598G -> 0.06415158495s
+** Level 11: 0.388G -> 0.04297625829s
+** Level 12: 0.59G -> 0.0282176778ss
+** Level 13: 0.92G -> 0.01815332854s
+** Level 14: 1.46G -> 0.01143934234s
+** Level 15: 2.36G -> 0.00705861622s
+*/
+const intervals = [
+  0,
+  1000,
+  793,
+  617.8,
+  472.73,
+  355.2,
+  262,
+  189.68,
+  134.73,
+  93.88,
+  64.15,
+  42.97,
+  28.22,
+  18.15,
+  11.44,
+  7.06,
+]
 
 const shapes = "TOLIJSZ";
 
@@ -409,7 +447,7 @@ function update(time = 0) {
   const deltaTime = time - tetromino.lastTime;
   tetromino.lastTime = time;
   
-  if ((tetromino.timer = tetromino.timer + deltaTime) >= FALL_INTERVAL) {
+  if ((tetromino.timer = tetromino.timer + deltaTime) >= intervals[player.level]) {
     tetrominoMoveDown();  
   }
 
