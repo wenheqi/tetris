@@ -38,6 +38,20 @@ const tetromino = {
 }
 
 /*
+** Check if there is (are) empty line(s) and remove it (them).
+*/
+function clearCompleteLines() {
+  for (let y = arena.length - 1; y >= 0; y--) {
+    if (!arena[y].includes(0)) { // complete line
+      let row = arena.splice(y, 1)[0].fill(0);
+      // put this row back to top
+      arena.unshift(row);
+      y++;
+    }
+  }
+}
+
+/*
 ** check if tetromino collides with current arena;
 ** return true iff collide happens.
 */
@@ -262,6 +276,7 @@ function merge() {
       }
     })
   })
+  clearCompleteLines();
 }
 
 function resetGame() {
