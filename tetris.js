@@ -422,12 +422,12 @@ function rotate(matrix, clockwise) {
 }
 
 function tetrominoMoveDown() {
-  if (player.isGameOver) { return; }
   tetromino.pos.y++;
   tetromino.timer = 0;
   if (collide()) {
     tetromino.pos.y--;
     merge();
+    if (player.isGameOver) { return; }
     // take the next tetromino from queue and move it to top of the screen
     tetromino.data = queue.shift();
     tetromino.pos.y = -4;
