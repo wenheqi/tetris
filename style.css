@@ -20,17 +20,71 @@ body {
 }
 
 #modal {
-  position:fixed;
+  position:absolute;
+  top: 0;
+  left: 0;
   height: 100%;
   width: 100%;
   background-color: #202028;
   z-index: 1;
-  opacity: 0.5;
+  opacity: 0.7;
   display: none;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-height: 100%;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: black;
+  opacity: 1;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+}
+
+.modal-title {
+  padding-bottom: 5px;
+}
+
+.modal-close {
+  
+}
+
+.modal-body {
+  padding-top: 5px;
 }
 
 #next-canvas {
   width: 100%;
+}
+
+.setting-item {
+  padding: 5px;
+}
+
+.setting-items-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.setting-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.align-items-content-center {
+  align-items: center
 }
 
 #stat-panel {
