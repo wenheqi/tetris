@@ -82,7 +82,7 @@ const player = {
   lines: 0,
 }
 
-const backgroundSound = new Sound("./tracks/bgm.mp3", 2, true);
+const backgroundSound = new Sound("./tracks/bgm.mp3", true);
 const successSound = new Sound("./tracks/power-up.wav");
 const failureSound = new Sound("./tracks/failure.wav");
 
@@ -380,6 +380,7 @@ function merge() {
         // when merge one not in game scence, it implies the game is over
         if (ax < 0 || ay < 0) {
           player.isGameOver = true;
+          player.isPlaying = false;
           backgroundSound.stop();
           failureSound.play();
         }
@@ -390,6 +391,14 @@ function merge() {
     })
   })
   clearCompleteLines();
+}
+
+function playNewGame() {
+  resetGame();
+  player.isPlaying = true;
+  backgroundSound.setPlaybackRate(1 + (player.level - 1) * 0.1);
+  backgroundSound.setCurrentTime(0);
+  backgroundSound.play();
 }
 
 function resetGame() {
@@ -450,7 +459,7 @@ function rotate(matrix, clockwise) {
   }
 }
 
-function Sound(src, speed = 1, loop = false) {
+function Sound(src, loop = false, speed = 1) {
   this.sound = document.createElement("audio");
   this.sound.src = src;
   this.sound.setAttribute("preload", "auto");
@@ -460,12 +469,20 @@ function Sound(src, speed = 1, loop = false) {
   this.sound.style.display = "none";
   document.body.appendChild(this.sound);
 
+  this.pause = function() {
+    this.sound.pause();
+  }
+
   this.play = function() {
     this.sound.play();
   }
 
-  this.pause = function() {
-    this.sound.pause();
+  this.setCurrentTime = function(curr) {
+    this.sound.currentTime = curr;
+  }
+
+  this.setPlaybackRate = function(rate) {
+    this.sound.playbackRate = rate;
   }
 
   this.stop = function() {
@@ -489,6 +506,7 @@ function tetrominoMoveDown() {
     if (collide()) {
       tetromino.pos.y--;
       player.isGameOver = true;
+      player.isPlaying = false;
       backgroundSound.stop();
       failureSound.play();
     }
@@ -591,21 +609,17 @@ onkeydown = function(evt) {
 }
 
 document.getElementById("restart-btn").onclick = (evt) => {
-  resetGame();
-  player.isPlaying = true;
-  backgroundSound.play();
+  playNewGame();
 }
 
 document.getElementById("play-btn").onclick = (evt) => {
-  player.isPlaying = !player.isPlaying;
-  if (player.isPlaying && !player.isGameOver) {
-    backgroundSound.play();
+  // start a new game
+  if (player.isGameOver && !player.isPlaying) {
+    playNewGame();
   }
-  else if (player.isGameOver) {
-    backgroundSound.stop();
-  }
-  else {
-    backgroundSound.pause(); 
+  else { // toggle play/resume status
+    player.isPlaying = !player.isPlaying;
+    player.isPlaying ? backgroundSound.play() : backgroundSound.pause();
   }
 }
 
