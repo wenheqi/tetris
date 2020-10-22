@@ -626,6 +626,10 @@ document.getElementById("restart-btn").onclick = (evt) => {
 
 document.getElementById("setting-btn").onclick = (evt) => {
   modal.style.display = "block";
+  if (player.isPlaying) {
+    // pause game in settings screen
+    document.getElementById("play-btn").dispatchEvent(new Event("click"));
+  }
 }
 
 document.getElementById("play-btn").onclick = (evt) => {
@@ -661,7 +665,9 @@ document.getElementById("bgm-toggle-btn").onclick = (evt) => {
   if (player.playBGM) {
     evt.target.classList.remove("fa-square");
     evt.target.classList.add("fa-check-square");
-    backgroundSound.play();
+    if (!player.isGameOver && player.isPlaying) {
+      backgroundSound.play();
+    }
   }
   // uncheck
   else {

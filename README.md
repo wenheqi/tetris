@@ -20,6 +20,8 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
 
 - Settings modal window is still translucent.
 
+- Only Safari can go full screen on iPad; All browsers on Android can go full screen. But there is a question mark icon near the checkbox and, after fullscreen, if I swip the screen from top to down, then the fullscreen check status becomes unsync with the real status.
+
 # Issue History
 
 - Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `resize` event every time `innerWidth` or `innerHeight` changes.
