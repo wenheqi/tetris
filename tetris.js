@@ -98,6 +98,11 @@ const tetromino = {
   timer: 0,
 }
 
+var lastMouseDownTime = 0;
+var lastMousePos = {x: 0, y: 0};
+var lastTetrominoPos = {x: 0, y: 0};
+var isMouseMoving = false;
+
 /*
 ** Check if there is (are) empty line(s) and remove it (them).
 ** In addition, calculate score according to https://tetris.wiki/Scoring.
@@ -373,6 +378,18 @@ function exitFullscreen() {
   }
 }
 
+function harddrop() {
+  if (!player.isPlaying || player.isGameOver) { return; }
+  // tetromino is probably not in the game scene yet
+  if (tetromino.pos.y < 0) { return; }
+  do {
+    // keep dropping current tetromino until the next one
+    // is spawn
+    tetrominoMoveDown();
+  }
+  while (tetromino.pos.y !== -4);
+}
+
 /*
 ** merge current tetromino into arena
 */
@@ -396,6 +413,8 @@ function merge() {
     })
   })
   clearCompleteLines();
+  // prevent following tetrominos piling up immediately
+  if (isMouseMoving) { isMouseMoving = false; }
 }
 
 function playNewGame() {
@@ -531,6 +550,35 @@ function tetrominoMoveRight() {
   
   if (collide()) {
     tetromino.pos.x--;
+  }
+}
+
+/* Move tetromino to target position */
+function tetrominoMoveTo(tarX, tarY) {
+  while (tarX != tetromino.pos.x) {
+    let oldX = tetromino.pos.x;
+    if (tarX < tetromino.pos.x) {
+      tetrominoMoveLeft();
+    }
+    else {
+      tetrominoMoveRight();
+    }
+    if (oldX === tetromino.pos.x) { break; }
+  }
+  while (tarY != tetromino.pos.y) {
+    let oldY = tetromino.pos.y;
+    // only downward is allowed
+    if (tarY > tetromino.pos.y) {
+      tetrominoMoveDown();
+      // move upward or new tetromino is spawn
+      if (oldY === tetromino.pos.y ||
+         tetromino.pos.y === -4) {
+        break;
+      }
+    }
+    else {
+      break;
+    }
   }
 }
 
@@ -705,6 +753,51 @@ document.getElementById("fullscreen-toggle-btn").onclick = (evt) => {
     evt.target.classList.add("fa-square");
     exitFullscreen();
   }
+}
+
+canvas.onmousedown = (evt) => {
+  if (!player.isPlaying || player.isGameOver) { return; }
+  lastMouseDownTime = evt.timeStamp;
+  isMouseMoving = true;
+  lastTetrominoPos.x = tetromino.pos.x;
+  lastTetrominoPos.y = tetromino.pos.y;
+  lastMousePos.x = evt.offsetX;
+  lastMousePos.y = evt.offsetY;
+}
+
+canvas.onmousemove = (evt) => {
+  if (!player.isPlaying || player.isGameOver) { return; }
+  if (!isMouseMoving) { return; }
+  const rect = canvas.getBoundingClientRect();
+  // pixel per block
+  const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  const dy = ((evt.offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((evt.offsetX - lastMousePos.x) / ppb) | 0;
+  tetrominoMoveTo(lastTetrominoPos.x + dx, lastTetrominoPos.y + dy);
+};
+
+canvas.onmouseup = (evt) => {
+  if (!player.isPlaying || player.isGameOver) { return; }
+  isMouseMoving = false;
+  let deltaMouseTime = evt.timeStamp - lastMouseDownTime;
+  const rect = canvas.getBoundingClientRect();
+  // pixel per block
+  const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  const dy = ((evt.offsetY - lastMousePos.y) / ppb) | 0;
+  // fast downward swipe
+  debugger
+  if (dy >= 4 && deltaMouseTime < 300) {
+    harddrop();
+  }
+  // short single click
+  else if (deltaMouseTime < 200) {
+    tetrominoRotate();
+  }
+}
+
+canvas.onmouseleave = (evt) => {
+  if (!player.isPlaying || player.isGameOver) { return; }
+  isMouseMoving = false;
 }
 
 resetGame();
