@@ -4,6 +4,8 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
 
 # Things Worth to Note
 
+- Firefox does a better job than Chrome when testing mouse event. In Chrome, when developer tool is on, the `mousedown` and `mouseup` events nearly always have the same `timeStamp`, which is quit confusing. I have to close the developer tool, test and then go back to it to check the logs. While Firefox can do the job with no hassle.
+
 - Do not 100% trust developer tools in browsers. Sometimes the behaviors are different. Try a real device if it's possible.
 
 - Strokes are aligned to the center of a path; in other words, half of the stroke is drawn on the inner side, and half on the outer side.
@@ -23,6 +25,46 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
 - Only Safari can go full screen on iPad; All browsers on Android can go full screen. But there is a question mark icon near the checkbox and, after fullscreen, if I swip the screen from top to down, then the fullscreen check status becomes unsync with the real status.
 
 # Issue History
+
+- Tetrominos pile up immediately.
+   + **What's the Impact**
+   
+      Game over immediately, which is definitely not what the user wants.
+   
+   + **How to Reproduce**
+   
+      1. Left press and drag tetromino around.
+      2. After this tetromino is landed, keep the left button pressed and drag down (the lower the pointer is in the game scene, the faster all the following tetrominos pile).
+   
+   + **Why It Happens**
+   
+      When not releasing the mouse after current tetromino is landed, the game still thinks the user wants to move the tetromino, hence when the next tetromino is born, it attempts to move to the location at which the pointer is immediately.
+   
+   + **How I Fixed It**
+   
+      Reset `isMouseMoving` flag when current tetromino is landed, i.e. force use to initiate another down/move/up event sequence in order to move the new tetromino.
+
+- Tetromino keeps following mouse.
+   + **What's the Impact**
+   
+      User will unintentionally move tetrominos which may lead losing the game.
+   
+   + **How to Reproduce**
+
+      1. Left press in the game area.
+      2. Move the mouse out of game area without releasing the left button.
+      3. Release the left button.
+      4. Move mouse back (without any button pressed) to game area.
+
+   + **Why It Happens**
+   
+   The `isMouseMoving` flag is not reset after mouse moves out of game canvas.
+   
+   + **How I Fixed It**
+   
+   Add `mouseleave` event listener to the game `canvas` to reset the flag when mouse moves out of game.
+
+   The reason I prefered `mouseleave` here is that, unlike `mouseout`, `mouseleave` doesn't bubble, i.e. `mouseleave` is fired only when the pointer has exited the element and all of its descendants.
 
 - Chrome, Firefox and Safari on iPad Pro (13.7) don't fire `resize` event every time `innerWidth` or `innerHeight` changes.
    + **What's the Impact**
