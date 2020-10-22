@@ -800,6 +800,18 @@ canvas.onmouseleave = (evt) => {
   isMouseMoving = false;
 }
 
+canvas.ontouchstart = (evt) => {
+  canvas.dispatchEvent(new Event("mousedown", evt));
+}
+
+canvas.ontouchend = (evt) => {
+  canvas.dispatchEvent(new Event("mouseup", evt));
+}
+
+canvas.ontouchmove = (evt) => {
+  canvas.dispatchEvent(new Event("mousemove", evt));
+}
+
 resetGame();
 
 update();
