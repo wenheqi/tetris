@@ -801,6 +801,7 @@ canvas.onmouseleave = (evt) => {
 }
 
 canvas.ontouchstart = (evt) => {
+  evt.preventDefault(); // prevent scrolling when touch
   const rect = canvas.getBoundingClientRect();
   lastMouseDownTime = Date.now();
   isMouseMoving = true;
@@ -811,6 +812,7 @@ canvas.ontouchstart = (evt) => {
 }
 
 canvas.ontouchend = (evt) => {
+  evt.preventDefault(); // prevent scrolling when touch
   if (!player.isPlaying || player.isGameOver) { return; }
   isMouseMoving = false;
   let deltaMouseTime = Date.now() - lastMouseDownTime;
@@ -827,6 +829,7 @@ canvas.ontouchend = (evt) => {
 }
 
 canvas.ontouchmove = (evt) => {
+  evt.preventDefault(); // prevent scrolling when touch
   const rect = canvas.getBoundingClientRect();
   if (!player.isPlaying || player.isGameOver) { return; }
   if (!isMouseMoving) { return; }
