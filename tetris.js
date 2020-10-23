@@ -833,7 +833,6 @@ canvas.ontouchmove = (evt) => {
   const rect = canvas.getBoundingClientRect();
   if (!player.isPlaying || player.isGameOver) { return; }
   if (!isMouseMoving) { return; }
-  const rect = canvas.getBoundingClientRect();
   // pixel per block
   const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
   const offsetX = evt.changedTouches[0].clientX - rect.left;
