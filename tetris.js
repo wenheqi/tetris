@@ -784,13 +784,14 @@ canvas.onmouseup = (evt) => {
   // pixel per block
   const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
   const dy = ((evt.offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((evt.offsetX - lastMousePos.x) / ppb) | 0;
   // fast downward swipe
   debugger
   if (dy >= 4 && deltaMouseTime < 300) {
     harddrop();
   }
   // short single click
-  else if (deltaMouseTime < 200) {
+  else if (deltaMouseTime < 200 && dx < 1 && dy < 1) {
     tetrominoRotate();
   }
 }
@@ -819,14 +820,16 @@ canvas.ontouchend = (evt) => {
   const rect = canvas.getBoundingClientRect();
   // pixel per block
   const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  lastMousePos.x = evt.changedTouches[0].clientX - rect.left;
   const offsetY = evt.changedTouches[0].clientY - rect.top;
   const dy = ((offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((offsetX - lastMousePos.x) / ppb) | 0;
   // fast downward swipe
   if (dy >= 4 && deltaMouseTime < 300) {
     harddrop();
   }
   // short single click
-  else if (deltaMouseTime < 200) {
+  else if (deltaMouseTime < 200 && dy < 1 && dx < 1) {
     tetrominoRotate();
   }
 }

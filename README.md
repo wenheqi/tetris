@@ -26,6 +26,23 @@ The classic arcade game is back, on desktop and mobile devices! Try if you can a
 
 # Issue History
 
+- Page scrols when touch point moves along the screen.
+   + **What's the Impact**
+   
+   This not only impacts user's game experience as the touch control functionalities on tetrominos are literally not working (except Chrome on iPad), but also may lead a page refresh and user may lose all unsaved game progress!
+   
+   + **How to Reproduce**
+   
+   Load the game page and play, you'll feel it right after a downward swipe.
+   
+   + **Why It Happens**
+   
+   The default behavior, e.g. touching the screen and moving downward, is to scroll the page, and in Chrome if you keep pulling down when the page already reaches the top, a page refresh will occur.
+   
+   + **How I Fixed It**
+   
+   Disable the default behavior in `touchstart`, `touchend` and `touchmove` event callbacks. Note that in this case, the `mouseup` event will also be blocked.
+   
 - Tetrominos pile up immediately.
    + **What's the Impact**
    
