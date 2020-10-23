@@ -823,10 +823,7 @@ canvas.ontouchend = (evt) => {
   if (dy >= 4 && deltaMouseTime < 300) {
     harddrop();
   }
-  // short single click
-  else if (deltaMouseTime < 200) {
-    tetrominoRotate();
-  }
+  // rotation will be taken care of by mouseup callback
 }
 
 canvas.ontouchmove = (evt) => {
