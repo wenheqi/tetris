@@ -820,8 +820,8 @@ canvas.ontouchend = (evt) => {
   const rect = canvas.getBoundingClientRect();
   // pixel per block
   const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
-  lastMousePos.x = evt.changedTouches[0].clientX - rect.left;
   const offsetY = evt.changedTouches[0].clientY - rect.top;
+  const offsetX = evt.changedTouches[0].clientX - rect.left;
   const dy = ((offsetY - lastMousePos.y) / ppb) | 0;
   const dx = ((offsetX - lastMousePos.x) / ppb) | 0;
   // fast downward swipe
