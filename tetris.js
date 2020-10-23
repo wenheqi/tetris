@@ -812,7 +812,7 @@ canvas.ontouchstart = (evt) => {
 }
 
 canvas.ontouchend = (evt) => {
-  evt.preventDefault(); // prevent scrolling when touch
+  evt.preventDefault(); // prevent scrolling when touch, also prevents mouseup event
   if (!player.isPlaying || player.isGameOver) { return; }
   isMouseMoving = false;
   let deltaMouseTime = Date.now() - lastMouseDownTime;
@@ -825,7 +825,10 @@ canvas.ontouchend = (evt) => {
   if (dy >= 4 && deltaMouseTime < 300) {
     harddrop();
   }
-  // rotation will be taken care of by mouseup callback
+  // short single click
+  else if (deltaMouseTime < 200) {
+    tetrominoRotate();
+  }
 }
 
 canvas.ontouchmove = (evt) => {
