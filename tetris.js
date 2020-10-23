@@ -801,15 +801,27 @@ canvas.onmouseleave = (evt) => {
 }
 
 canvas.ontouchstart = (evt) => {
-  canvas.dispatchEvent(new Event("mousedown", evt));
+  const rect = canvas.getBoundingClientRect();
+  canvas.dispatchEvent(new Event("mousedown", {
+    offsetX: evt.targetTouches[0].clientX - rect.left,
+    offsetY: evt.targetTouches[0].clientY - rect.top,
+  }));
 }
 
 canvas.ontouchend = (evt) => {
-  canvas.dispatchEvent(new Event("mouseup", evt));
+  const rect = canvas.getBoundingClientRect();
+  canvas.dispatchEvent(new Event("mouseup", {
+    offsetX: evt.changedTouches[0].clientX - rect.left,
+    offsetY: evt.changedTouches[0].clientY - rect.top,
+  }));
 }
 
 canvas.ontouchmove = (evt) => {
-  canvas.dispatchEvent(new Event("mousemove", evt));
+  const rect = canvas.getBoundingClientRect();
+  canvas.dispatchEvent(new Event("mousemove", {
+    offsetX: evt.targetTouches[0].clientX - rect.left,
+    offsetY: evt.targetTouches[0].clientY - rect.top,
+  }));
 }
 
 resetGame();
