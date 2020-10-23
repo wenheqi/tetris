@@ -784,13 +784,14 @@ canvas.onmouseup = (evt) => {
   // pixel per block
   const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
   const dy = ((evt.offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((evt.offsetX - lastMousePos.x) / ppb) | 0;
   // fast downward swipe
   debugger
   if (dy >= 4 && deltaMouseTime < 300) {
     harddrop();
   }
   // short single click
-  else if (deltaMouseTime < 200) {
+  else if (deltaMouseTime < 200 && dx < 1 && dy < 1) {
     tetrominoRotate();
   }
 }
@@ -798,6 +799,53 @@ canvas.onmouseup = (evt) => {
 canvas.onmouseleave = (evt) => {
   if (!player.isPlaying || player.isGameOver) { return; }
   isMouseMoving = false;
+}
+
+canvas.ontouchstart = (evt) => {
+  evt.preventDefault(); // prevent scrolling when touch
+  const rect = canvas.getBoundingClientRect();
+  lastMouseDownTime = Date.now();
+  isMouseMoving = true;
+  lastTetrominoPos.x = tetromino.pos.x;
+  lastTetrominoPos.y = tetromino.pos.y;
+  lastMousePos.x = evt.changedTouches[0].clientX - rect.left;
+  lastMousePos.y = evt.changedTouches[0].clientY - rect.top;
+}
+
+canvas.ontouchend = (evt) => {
+  evt.preventDefault(); // prevent scrolling when touch, also prevents mouseup event
+  if (!player.isPlaying || player.isGameOver) { return; }
+  isMouseMoving = false;
+  let deltaMouseTime = Date.now() - lastMouseDownTime;
+  const rect = canvas.getBoundingClientRect();
+  // pixel per block
+  const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  const offsetY = evt.changedTouches[0].clientY - rect.top;
+  const offsetX = evt.changedTouches[0].clientX - rect.left;
+  const dy = ((offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((offsetX - lastMousePos.x) / ppb) | 0;
+  // fast downward swipe
+  if (dy >= 4 && deltaMouseTime < 300) {
+    harddrop();
+  }
+  // short single click
+  else if (deltaMouseTime < 200 && dy === 0 && dx === 0) {
+    tetrominoRotate();
+  }
+}
+
+canvas.ontouchmove = (evt) => {
+  evt.preventDefault(); // prevent scrolling when touch
+  const rect = canvas.getBoundingClientRect();
+  if (!player.isPlaying || player.isGameOver) { return; }
+  if (!isMouseMoving) { return; }
+  // pixel per block
+  const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  const offsetX = evt.changedTouches[0].clientX - rect.left;
+  const offsetY = evt.changedTouches[0].clientY - rect.top;
+  const dy = ((offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((offsetX - lastMousePos.x) / ppb) | 0;
+  tetrominoMoveTo(lastTetrominoPos.x + dx, lastTetrominoPos.y + dy);
 }
 
 resetGame();
