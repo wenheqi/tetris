@@ -829,7 +829,7 @@ canvas.ontouchend = (evt) => {
     harddrop();
   }
   // short single click
-  else if (deltaMouseTime < 200 && dy < 1 && dx < 1) {
+  else if (deltaMouseTime < 100 && dy < 1 && dx < 1) {
     tetrominoRotate();
   }
 }
