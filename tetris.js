@@ -802,26 +802,45 @@ canvas.onmouseleave = (evt) => {
 
 canvas.ontouchstart = (evt) => {
   const rect = canvas.getBoundingClientRect();
-  canvas.dispatchEvent(new Event("mousedown", {
-    offsetX: evt.targetTouches[0].clientX - rect.left,
-    offsetY: evt.targetTouches[0].clientY - rect.top,
-  }));
+  lastMouseDownTime = Date.now();
+  isMouseMoving = true;
+  lastTetrominoPos.x = tetromino.pos.x;
+  lastTetrominoPos.y = tetromino.pos.y;
+  lastMousePos.x = evt.changedTouches[0].clientX - rect.left;
+  lastMousePos.y = evt.changedTouches[0].clientY - rect.top;
 }
 
 canvas.ontouchend = (evt) => {
+  if (!player.isPlaying || player.isGameOver) { return; }
+  isMouseMoving = false;
+  let deltaMouseTime = Date.now() - lastMouseDownTime;
   const rect = canvas.getBoundingClientRect();
-  canvas.dispatchEvent(new Event("mouseup", {
-    offsetX: evt.changedTouches[0].clientX - rect.left,
-    offsetY: evt.changedTouches[0].clientY - rect.top,
-  }));
+  // pixel per block
+  const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  const offsetY = evt.changedTouches[0].clientY - rect.top;
+  const dy = ((offsetY - lastMousePos.y) / ppb) | 0;
+  // fast downward swipe
+  if (dy >= 4 && deltaMouseTime < 300) {
+    harddrop();
+  }
+  // short single click
+  else if (deltaMouseTime < 200) {
+    tetrominoRotate();
+  }
 }
 
 canvas.ontouchmove = (evt) => {
   const rect = canvas.getBoundingClientRect();
-  canvas.dispatchEvent(new Event("mousemove", {
-    offsetX: evt.targetTouches[0].clientX - rect.left,
-    offsetY: evt.targetTouches[0].clientY - rect.top,
-  }));
+  if (!player.isPlaying || player.isGameOver) { return; }
+  if (!isMouseMoving) { return; }
+  const rect = canvas.getBoundingClientRect();
+  // pixel per block
+  const ppb = BLOCK_SIZE * rect.height / ARENA_HEIGHT;
+  const offsetX = evt.changedTouches[0].clientX - rect.left;
+  const offsetY = evt.changedTouches[0].clientY - rect.top;
+  const dy = ((offsetY - lastMousePos.y) / ppb) | 0;
+  const dx = ((offsetX - lastMousePos.x) / ppb) | 0;
+  tetrominoMoveTo(lastTetrominoPos.x + dx, lastTetrominoPos.y + dy);
 }
 
 resetGame();
