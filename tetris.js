@@ -1,6 +1,7 @@
 const ARENA_WIDTH = 240; // in pixels
 const ARENA_HEIGHT = 400; // in pixels
 const BLOCK_SIZE = 20; // basic tetromino block size, in pixels
+const TETROMINO_INIT_Y = -4; // the y coordate when a tetromino is born
 
 const colors = [
   "#000000",
@@ -94,7 +95,7 @@ const failureSound = new Sound("./tracks/failure.wav");
 const tetromino = {
   data: [],
   lastTime: 0,
-  pos: {x: 0, y: -4},
+  pos: {x: 0, y: TETROMINO_INIT_Y},
   timer: 0,
 }
 
@@ -387,7 +388,7 @@ function harddrop() {
     // is spawn
     tetrominoMoveDown();
   }
-  while (tetromino.pos.y !== -4);
+  while (tetromino.pos.y !== TETROMINO_INIT_Y);
 }
 
 /*
@@ -427,7 +428,7 @@ function playNewGame() {
 
 function resetGame() {
   tetromino.data = createRandomTetromino();
-  tetromino.pos.y = -4;
+  tetromino.pos.y = TETROMINO_INIT_Y;
   tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
   tetromino.lastTime = 0;
   tetromino.timer = 0;
@@ -523,7 +524,7 @@ function tetrominoMoveDown() {
     if (player.isGameOver) { return; }
     // take the next tetromino from queue and move it to top of the screen
     tetromino.data = queue.shift();
-    tetromino.pos.y = -4;
+    tetromino.pos.y = TETROMINO_INIT_Y;
     tetromino.pos.x = (ARENA_WIDTH / (2 * BLOCK_SIZE) - tetromino.data[0].length / 2) | 0;
     queue.push(createRandomTetromino());
     // game might be over at this time
@@ -572,7 +573,7 @@ function tetrominoMoveTo(tarX, tarY) {
       tetrominoMoveDown();
       // move upward or new tetromino is spawn
       if (oldY === tetromino.pos.y ||
-         tetromino.pos.y === -4) {
+         tetromino.pos.y === TETROMINO_INIT_Y) {
         break;
       }
     }
