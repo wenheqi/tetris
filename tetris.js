@@ -788,6 +788,8 @@ canvas.onmouseup = (evt) => {
   // fast downward swipe
   debugger
   if (dy >= 4 && deltaMouseTime < 300) {
+    // for a hard drop, x should not change
+    tetrominoMoveTo(lastTetrominoPos.x, lastTetrominoPos.y);
     harddrop();
   }
   // short single click
@@ -826,6 +828,8 @@ canvas.ontouchend = (evt) => {
   const dx = ((offsetX - lastMousePos.x) / ppb) | 0;
   // fast downward swipe
   if (dy >= 4 && deltaMouseTime < 300) {
+    // for a hard drop, x should not change
+    tetrominoMoveTo(lastTetrominoPos.x, lastTetrominoPos.y);
     harddrop();
   }
   // short single click
